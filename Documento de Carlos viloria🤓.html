@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Familia</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Caviar+Dreams&display=swap');
+        body {
+            font-family: 'Caviar Dreams', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #e6e6fa;
+            position: relative; /* Para el efecto blur en el fondo */
+        }
+        /* Efecto de desenfoque */
+        .blur-background {
+            filter: blur(5px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            display: none; /* Inicialmente oculto */
+        }
+        header, footer {
+            position: relative;
+            z-index: 1;
+            padding: 20px;
+        }
+        header {
+            background: #9370db;
+            color: #ffffff;
+            text-align: center;
+        }
+        nav {
+            margin: 15px 0;
+        }
+        nav a {
+            margin: 0 15px;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+        nav a:hover {
+            color: #e6e6fa;
+        }
+        section {
+            padding: 20px;
+            background: #ffffff;
+            margin: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative; /* Para el uso de z-index en secciones */
+        }
+        section:hover {
+            transform: scale(1.02);
+        }
+        section.active {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
+        }
+        section h2 {
+            color: #9370db;
+        }
+        footer {
+            text-align: center;
+            padding: 10px 0;
+            background: #9370db;
+            color: #ffffff;
+            width: 100%;
+        }
+        .highlight {
+            color: #8a2be2;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px 0;
+            background-color: #8a2be2;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            box-shadow: 0 5px #6a1bbf;
+            transition: all 0.3s ease;
+        }
+        .button:hover {
+            background-color: #6a1bbf;
+            box-shadow: 0 3px #4b0c8b;
+        }
+        .upload-section {
+            margin: 20px 0;
+        }
+        .upload-section input[type="file"] {
+            display: block;
+            margin: 10px 0;
+        }
+        #loginModal {
+            display: flex;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        #loginForm {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            min-width: 300px;
+            position: relative;
+            z-index: 2; /* Asegura que el formulario esté por encima del fondo */
+        }
+        #loginForm h2 {
+            margin-bottom: 20px;
+        }
+        #loginForm h2::before {
+            content: "🔑 "; /* Emoji de llave */
+        }
+        #loginForm input[type="password"] {
+            padding: 10px;
+            margin: 10px 0;
+            width: calc(100% - 20px);
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding-left: 40px;
+            background-image: url('https://cdn-icons-png.flaticon.com/512/565/565655.png');
+            background-size: 20px;
+            background-position: 10px center;
+            background-repeat: no-repeat;
+            z-index: 3; /* Asegura que el input esté por encima del fondo */
+        }
+        #loginForm input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #8a2be2;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        #loginForm input[type="submit"]:hover {
+            background-color: #6a1bbf;
+        }
+    </style>
+    <script>
+        function checkPassword(event) {
+            event.preventDefault();
+            var password = document.getElementById("password").value;
+            if (password === "2024") {
+                document.getElementById("loginModal").style.display = "none";
+                document.querySelector('.blur-background').style.display = 'none'; // Oculta el fondo desenfocado
+            } else {
+                alert("Contraseña incorrecta. Inténtelo de nuevo.");
+                document.getElementById("password").value = "";
+            }
+        }
+
+        // Nueva función para resaltar la sección activa
+        function highlightSection(event) {
+            var sections = document.querySelectorAll('section');
+            sections.forEach(section => section.classList.remove('active')); // Elimina la clase activa de todas las secciones
+
+            var targetId = event.target.getAttribute('href').substring(1); // Obtiene el ID de la sección
+            var targetSection = document.getElementById(targetId); // Busca la sección correspondiente
+
+            if (targetSection) {
+                targetSection.classList.add('active'); // Añade la clase activa a la sección seleccionada
+            }
+        }
+
+        window.onload = function() {
+            var blurBackground = document.createElement('div');
+            blurBackground.className = 'blur-background'; // Clase que aplica el efecto de desenfoque
+            document.body.appendChild(blurBackground);
+
+            // Muestra el fondo desenfocado cuando se carga la página
+            blurBackground.style.display = 'block';
+
+            document.body.classList.remove("active");
+            var navLinks = document.querySelectorAll('nav a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', highlightSection);
+            });
+
+            // Muestra el modal de entrada de contraseña al cargar la página
+            document.getElementById("loginModal").style.display = "flex"; // Muestra el modal
+        }
+    </script>
+</head>
+<body>
+    <div class="blur-background"></div> <!-- Agregar div para el fondo desenfocado -->
+    <div id="loginModal">
+        <form id="loginForm" onsubmit="checkPassword(event)">
+            <h2>Ingrese la contraseña</h2>
+            <input type="password" id="password" placeholder="Contraseña">
+            <input type="submit" value="Entrar">
+        </form>
+    </div>
+
+    <header>
+        <h1>Familia</h1>
+        <nav>
+            <a href="#photos">Fotos</a>
+            <a href="#about">Acerca de</a>
+            <a href="#services">Servicios</a>
+            <a href="#contact">Contacto</a>
+        </nav>
+    </header>
+
+    <section id="photos">
+        <h2>Fotos</h2>
+        <p>Aquí puedes subir y ver fotos de tu familia.</p>
+        <div class="upload-section">
+            <input type="file" accept="image/*">
+            <button class="button">Crear Álbum</button>
+        </div>
+        <div class="upload-section">
+            <h3>Agregar Video</h3>
+            <input type="file" accept="video/*">
+            <button class="button">Agregar Video</button>
+        </div>
+    </section>
+
+    <section id="about">
+        <h2>Acerca de</h2>
+        <p>Esta es una descripción de la página web. Aquí puedes incluir información sobre ti o sobre tu proyecto.</p>
+        <a href="#services" class="button">Ver Servicios</a>
+    </section>
+
+    <section id="services">
+        <h2>Servicios</h2>
+        <p>Aquí puedes detallar los <span class="highlight">servicios</span> que ofreces o lo que quieras destacar.</p>
+    </section>
+
+    <section id="contact">
+        <h2>Contacto</h2>
+        <p>Puedes contactar conmigo a través de este correo: <a href="mailto:tuemail@ejemplo.com" class="highlight">tuemail@ejemplo.com</a></p>
+    </section>
+
+    <footer>
+        <p>© 2024 Mi Página Familiar. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>
